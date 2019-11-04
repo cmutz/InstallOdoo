@@ -73,16 +73,16 @@ install_dependencies(){
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n--- Installing Python 3 + pip3 --"
-sudo apt-get install git python3-pip build-essential wget python3-dev python3-venv python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools -y
+sudo apt-get install git python-pip build-essential wget python-dev python-virtualenv python-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python-setuptools -y
 
 echo -e "\n---- Install python packages/requirements ----"
-sudo pip3 install -r https://github.com/OCA/OCB/raw/${OE_VERSION}/requirements.txt
+sudo pip install -r https://github.com/OCA/OCB/raw/${OE_VERSION}/requirements.txt
 
 echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
 sudo apt-get install nodejs npm -y
 sudo npm install -g rtlcss
 sudo npm install -g less
-sudo npm install -g less-plugin-clean-cs
+#sudo npm install -g less-plugin-clean-cs
 }
 
 install_wkhtmltopdf(){
@@ -162,11 +162,11 @@ sudo su root -c "printf '[options] \n; This is the password that allows database
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'logfile = ${OE_HOME}/log/${OE_CONFIG}.log\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
-#if [ $IS_ENTERPRISE = "True" ]; then
-#    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_SERVER}/addons\n' >> /etc/${OE_CONFIG}.conf"
-#else
-#    sudo su root -c "printf 'addons_path=${OE_HOME_SERVER}/addons,${OE_HOME}/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
-#fi
+if [ $IS_ENTERPRISE = "True" ]; then
+    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_SERVER}/addons\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
+else
+    sudo su root -c "printf 'addons_path=${OE_HOME_SERVER}/addons' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
+fi
 sudo chown $OE_USER:$OE_USER $OE_HOME/conf/${OE_CONFIG}.conf
 sudo chmod 640 $OE_HOME/conf/${OE_CONFIG}.conf
 
@@ -271,6 +271,7 @@ echo "-----------------------------------------------------------"
 
 update_server
 install_dependencies
+install_pg
 install_wkhtmltopdf
 install_env_odoo
 install_server_odoo

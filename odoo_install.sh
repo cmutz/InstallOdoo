@@ -30,7 +30,7 @@ OE_HOME_SERVER="/opt/$OE_USER/odoo_$OE_DIR_VERSION/server"
 
 # Set the user and password Postgresql
 OE_PG_USER="odoo_$OE_DIR_VERSION"
-OE_PG_PWD="odoo_v13"
+OE_PG_PWD="odoo_$OE_DIR_VERSION"
 
 INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
@@ -40,14 +40,6 @@ IS_ENTERPRISE="False"
 # set the superadmin password
 OE_SUPERADMIN="admin"
 OE_CONFIG="odoo_$OE_DIR_VERSION"
-
-##
-###  WKHTMLTOPDF download links
-## === Ubuntu Trusty x64 & x32 === (for other distributions please replace these two links,
-## in order to have correct version of wkhtmltopdf installed, for a danger note refer to 
-## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
-WKHTMLTOX_X64=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_amd64.deb
-WKHTMLTOX_X32=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_i386.deb
 
 update_server(){
 #--------------------------------------------------
@@ -73,6 +65,8 @@ sudo apt-get install postgresql postgresql-server-dev-all -y
 echo -e "\n---- Creating the ODOO PostgreSQL User  ----"
 #sudo su - postgres -c "createuser -s $OE_PG_USER" 2> /dev/null || true
 sudo -u postgres bash -c "psql -c \"CREATE USER $OE_PG_USER WITH PASSWORD '$OE_PG_PWD';\""
+sudo -u postgres bash -c "psql -c \"ALTER USER $OE_PG_USER WITH SUPERUSER;\""
+
 }
 
 install_dependencies(){
@@ -80,7 +74,7 @@ install_dependencies(){
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n--- Installing Python 3 + pip3 --"
-sudo apt install git python-pip build-essential wget python-dev python-virtualenv python-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python-setuptools node-less
+sudo apt install git python-pip build-essential wget python-dev python-virtualenv python-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python-setuptools node-less -y
 
 echo -e "\n---- Install python packages/requirements ----"
 sudo pip install -r https://github.com/OCA/OCB/raw/${OE_VERSION}/requirements.txt
@@ -97,15 +91,24 @@ install_wkhtmltopdf(){
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-  echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 13 ----"
+  echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO $OE_VERSION ----"
+##
+###  WKHTMLTOPDF download links
+## === Ubuntu Trusty x64 & x32 === (for other distributions please replace these two links,
+## in order to have correct version of wkhtmltopdf installed, for a danger note refer to 
+## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
+WKHTMLTOX_X64="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.${OE_SYSTEM_NAME}_amd64.deb"
+WKHTMLTOX_X32="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.${OE_SYSTEM_NAME}_i386.deb"
+
   #pick up correct one from x64 & x32 versions:
   if [ "`getconf LONG_BIT`" == "64" ];then
       _url=$WKHTMLTOX_X64
   else
       _url=$WKHTMLTOX_X32
   fi
-  sudo wget $_url
-  sudo gdebi --n `basename $_url`
+  sudo wget $_url -P /tmp/
+  sudo dpkg -i /tmp/`basename $_url`
+  sudo apt-get -fy install
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
 else
@@ -281,9 +284,9 @@ echo "Restart Odoo service: sudo service $OE_CONFIG restart"
 echo "-----------------------------------------------------------"
 }
 
-update_server
-install_dependencies
-install_pg
+#update_server
+#install_dependencies
+#install_pg
 install_wkhtmltopdf
-install_env_odoo
-install_server_odoo
+#install_env_odoo
+#install_server_odoo

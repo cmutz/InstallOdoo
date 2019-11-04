@@ -15,8 +15,8 @@
 ################################################################################
 
 OE_USER="odoo"
-OE_HOME="/$OE_USER"
-OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
+OE_HOME="/opt/$OE_USER"
+OE_HOME_EXT="/opt/$OE_USER/odoo$OE_DIR_VERSION/server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
@@ -24,12 +24,13 @@ INSTALL_WKHTMLTOPDF="True"
 OE_PORT="8069"
 # Choose the Odoo version which you want to install. For example: 13.0, 12.0, 11.0 or saas-18. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 13.0
-OE_VERSION="13.0"
+OE_DIR_VERISON="v10"
+OE_VERSION="10.0"
 # Set this to True if you want to install the Odoo enterprise version!
 IS_ENTERPRISE="False"
 # set the superadmin password
 OE_SUPERADMIN="admin"
-OE_CONFIG="${OE_USER}-server"
+OE_CONFIG="odoo_$OE_DIR_VERSION"
 
 ##
 ###  WKHTMLTOPDF download links
@@ -66,7 +67,7 @@ echo -e "\n--- Installing Python 3 + pip3 --"
 sudo apt-get install git python3 python3-pip build-essential wget python3-dev python3-venv python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libpng12-0 gdebi -y
 
 echo -e "\n---- Install python packages/requirements ----"
-sudo pip3 install -r https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
+sudo pip3 install -r https://github.com/OCA/OCB/raw/${OE_VERSION}/requirements.txt
 
 echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
 sudo apt-get install nodejs npm -y
@@ -98,13 +99,13 @@ sudo adduser $OE_USER sudo
 
 echo -e "\n---- Create Log directory ----"
 sudo mkdir /var/log/$OE_USER
-sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
+sudo chown $OE_USER:$OE_USER /$OE_HOME/log/$OE_USER
 
 #--------------------------------------------------
 # Install ODOO
 #--------------------------------------------------
 echo -e "\n==== Installing ODOO Server ===="
-sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
+sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/OCA/OCB $OE_HOME_EXT/
 
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
@@ -140,7 +141,7 @@ sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
 
 echo -e "* Create server config file"
 
-sudo touch /etc/${OE_CONFIG}.conf
+sudo touch /$OE_HOME/conf/${OE_CONFIG}.conf
 echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"

@@ -38,7 +38,7 @@ OE_PORT="8069"
 # Set this to True if you want to install the Odoo enterprise version!
 IS_ENTERPRISE="False"
 # set the superadmin password
-OE_SUPERADMIN="admin"
+OE_SUPERADMIN="admin_2019"
 OE_CONFIG="odoo_$OE_DIR_VERSION"
 
 update_server(){
@@ -170,7 +170,9 @@ sudo touch $OE_HOME/conf/${OE_CONFIG}.conf
 echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
+sudo su root -c "printf 'data_dir = ${OE_HOME}/filestore\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
+sudo su root -c "printf 'xmlrpc_interface = 0.0.0.0\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'logfile = ${OE_HOME}/log/${OE_CONFIG}.log\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_host = localhost\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_port = False\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
@@ -284,9 +286,9 @@ echo "Restart Odoo service: sudo service $OE_CONFIG restart"
 echo "-----------------------------------------------------------"
 }
 
-#update_server
-#install_dependencies
-#install_pg
+update_server
+install_dependencies
+install_pg
 install_wkhtmltopdf
-#install_env_odoo
-#install_server_odoo
+install_env_odoo
+install_server_odoo

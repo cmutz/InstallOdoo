@@ -19,11 +19,8 @@
 OE_DIR_VERSION="v10"
 OE_VERSION="10.0"
 
-<<<<<<< HEAD
 OE_SYSTEM_NAME=`lsb_release -cs`
-=======
 
->>>>>>> d107993486b6274042ae3e16ab6ea41de1936c68
 OE_USER="odoo"
 OE_HOME="/opt/$OE_USER"
 OE_HOME_ENV="$OE_HOME/odoo_$OE_DIR_VERSION"
@@ -74,12 +71,8 @@ echo -e "\n---- Install PostgreSQL Server ----"
 sudo apt-get install postgresql postgresql-server-dev-all -y
 
 echo -e "\n---- Creating the ODOO PostgreSQL User  ----"
-<<<<<<< HEAD
-sudo su - postgres -c "createuser -s $OE_PG_USER" 2> /dev/null || true
+#sudo su - postgres -c "createuser -s $OE_PG_USER" 2> /dev/null || true
 sudo -u postgres bash -c "psql -c \"CREATE USER $OE_PG_USER WITH PASSWORD '$OE_PG_PWD';\""
-=======
-sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
->>>>>>> d107993486b6274042ae3e16ab6ea41de1936c68
 }
 
 install_dependencies(){
@@ -87,11 +80,7 @@ install_dependencies(){
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n--- Installing Python 3 + pip3 --"
-<<<<<<< HEAD
 sudo apt install git python-pip build-essential wget python-dev python-virtualenv python-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python-setuptools node-less
-=======
-sudo apt-get install git python-pip build-essential wget python-dev python-virtualenv python-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python-setuptools -y
->>>>>>> d107993486b6274042ae3e16ab6ea41de1936c68
 
 echo -e "\n---- Install python packages/requirements ----"
 sudo pip install -r https://github.com/OCA/OCB/raw/${OE_VERSION}/requirements.txt
@@ -180,14 +169,11 @@ sudo su root -c "printf '[options] \n; This is the password that allows database
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'logfile = ${OE_HOME}/log/${OE_CONFIG}.log\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
-<<<<<<< HEAD
 sudo su root -c "printf 'db_host = localhost\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_port = False\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_user = ${OE_PG_USER}\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_password = ${OE_PG_PWD}\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 
-=======
->>>>>>> d107993486b6274042ae3e16ab6ea41de1936c68
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_SERVER}/addons\n' >> ${OE_HOME}/conf/${OE_CONFIG}.conf"
 else

@@ -288,14 +288,15 @@ echo "-----------------------------------------------------------"
 }
 
 install_sources_oca_modules() {
-python insert_module_oca_v10.py
+DIRNAME=$(dirname $0)
+python $DIRNAME/insert_module_oca_v10.py
 }
 
 
-#update_server
-#install_dependencies
-#install_pg
-#install_wkhtmltopdf
-#install_env_odoo
-#install_server_odoo
+update_server
+install_dependencies
+install_pg
+install_wkhtmltopdf
+install_env_odoo
+install_server_odoo
 install_sources_oca_modules

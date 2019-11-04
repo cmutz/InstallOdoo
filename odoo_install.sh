@@ -126,6 +126,7 @@ echo -e "\n---- Create custom directories ----"
 
 sudo su $OE_USER -c "mkdir  $OE_HOME/conf $OE_HOME/filestore $OE_HOME/log $OE_HOME/odoo_$OE_DIR_VERSION"
 sudo su $OE_USER -c "mkdir $OE_HOME_ENV/dev_addons $OE_HOME_ENV/extra_addons $OE_HOME_ENV/muk_addons $OE_HOME_ENV/oca_addons $OE_HOME_ENV/sources $OE_HOME_ENV/vraja_addons/"
+sudo su $OE_USER -c "mkdir $OE_HOME_ENV/sources/dev_addons $OE_HOME_ENV/sources/extra_addons $OE_HOME_ENV/sources/muk_addons $OE_HOME_ENV/sources/oca_addons $OE_HOME_ENV/sources/vraja_addons/"
 
 }
 
@@ -286,9 +287,15 @@ echo "Restart Odoo service: sudo service $OE_CONFIG restart"
 echo "-----------------------------------------------------------"
 }
 
-update_server
-install_dependencies
-install_pg
-install_wkhtmltopdf
-install_env_odoo
-install_server_odoo
+install_sources_oca_modules() {
+python insert_module_oca_v10.py
+}
+
+
+#update_server
+#install_dependencies
+#install_pg
+#install_wkhtmltopdf
+#install_env_odoo
+#install_server_odoo
+install_sources_oca_modules

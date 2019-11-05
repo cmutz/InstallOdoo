@@ -49,7 +49,7 @@ echo -e "\n---- Update Server ----"
 # universe package is for Ubuntu 18.x
 sudo add-apt-repository universe
 # libpng12-0 dependency for wkhtmltopdf
-sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ xenial main"
+sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ $OE_SYSTEM_NAME main"
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get --purge autoremove -y

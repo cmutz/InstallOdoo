@@ -12,3 +12,4 @@ with open(path, "r") as f:
     for liste in contenu:
         git_command = "https://github.com/OCA/" + liste
         os.system("git clone " + git_command + " -b " + version_odoo + " " + path_sources + "/" + liste)
+    
